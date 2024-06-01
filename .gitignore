@@ -22,7 +22,10 @@ go.work
 go.work.sum
 
 # Generated binaries
-backend
+/backend
 
 # Generated magefile
 mage_output_file.go
+
+# Taskfile generated
+.task/

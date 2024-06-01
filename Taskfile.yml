@@ -1,0 +1,17 @@
+version: "3"
+
+tasks:
+  build:
+    cmds:
+      - templ generate
+      - go build -o backend cmd/backend/main.go
+    sources:
+      - "**/*.go"
+      - "**/*.templ"
+      - exclude: "**/*_templ.go"
+    generates:
+      - backend
+  run:
+    deps: [build]
+    cmds:
+      - ./backend
