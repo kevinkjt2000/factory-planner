@@ -29,3 +29,7 @@ mage_output_file.go
 
 # Taskfile generated
 .task/
+
+# Database files
+gtnh-recipes.tar.xz
+nesql-repository/

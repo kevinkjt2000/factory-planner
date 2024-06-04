@@ -1,0 +1,16 @@
+services:
+  db:
+    image: postgres
+    restart: always
+    # set shared memory limit when using docker-compose
+    shm_size: 128mb
+    environment:
+      POSTGRES_DB: gtnh_recipes
+      POSTGRES_PASSWORD: example
+    ports:
+      - "127.0.0.1:5432:5432"
+    volumes:
+      - gtnh-recipes:/var/lib/postgresql/data
+
+volumes:
+  gtnh-recipes:

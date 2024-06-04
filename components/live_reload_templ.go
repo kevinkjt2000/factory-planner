@@ -23,7 +23,7 @@ func LiveReload() templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<script>\n\t\tconn = new WebSocket(\"ws://\" + document.location.host + \"/ws\");  \n\t\tconn.onclose = function (evt) {  \n\t\t\tconsole.log(\"Connection Closed\")  \n\t\t\tsetTimeout(function () {  \n\t\t\t\tlocation.reload();  \n\t\t\t}, 2000);  \n\t\t};\n\t</script>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<script type=\"text/javascript\">\n\t\tconn = new WebSocket(\"ws://\" + document.location.host + \"/ws\");  \n\t\tconn.onclose = function (evt) {  \n\t\t\tconsole.log(\"Connection Closed\")  \n\t\t\tsetTimeout(function () {  \n\t\t\t\tlocation.reload();  \n\t\t\t}, 2000);  \n\t\t};\n\t</script>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

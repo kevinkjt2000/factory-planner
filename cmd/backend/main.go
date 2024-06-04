@@ -6,11 +6,12 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
+	"strings"
 	"syscall"
 
-	"github.com/a-h/templ"
 	"github.com/gorilla/websocket"
 	"github.com/kevinkjt2000/factory-planner/components"
+	"github.com/kevinkjt2000/factory-planner/internal"
 )
 
 type webSocketHandler struct {
@@ -28,6 +29,15 @@ func (wsh webSocketHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	// defer c.Close()
 }
 
+func pageHandler(w http.ResponseWriter, r *http.Request) {
+	db := internal.NewDatabase()
+	recipeTypes := strings.Join(db.GetRecipeTypes(), ", ")
+	err := components.Page(recipeTypes).Render(r.Context(), w)
+	if err != nil {
+		fmt.Printf("error during page render: %v", err)
+	}
+}
+
 func main() {
 	quitOnSigTerm()
 	webSocketHandler := webSocketHandler{
@@ -35,7 +45,7 @@ func main() {
 	}
 
 	fmt.Println("Registering handlers")
-	http.Handle("/", templ.Handler(components.Page()))
+	http.HandleFunc("/", pageHandler)
 	http.Handle("/ws", webSocketHandler)
 	err := http.ListenAndServe(":8080", nil)
 	if err != nil {

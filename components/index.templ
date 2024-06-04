@@ -1,10 +1,12 @@
 package components
 
-templ Hello() {
-	<div>Wave</div>
+templ Form(data string) {
+	<div>{data}</div>
 }
 
-templ Page() {
-	@Hello()
-	@LiveReload()
+templ Page(data string) {
+	<div>
+		@Form(data)
+		@LiveReload()
+	</div>
 }
