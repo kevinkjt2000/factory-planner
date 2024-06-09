@@ -6,7 +6,6 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
-	"strings"
 	"syscall"
 
 	"github.com/gorilla/websocket"
@@ -31,8 +30,7 @@ func (wsh webSocketHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 func pageHandler(w http.ResponseWriter, r *http.Request) {
 	db := internal.NewDatabase()
-	recipeTypes := strings.Join(db.GetRecipeTypes(), ", ")
-	err := components.Page(recipeTypes).Render(r.Context(), w)
+	err := components.Page(db.GetRecipeTypes()).Render(r.Context(), w)
 	if err != nil {
 		fmt.Printf("error during page render: %v", err)
 	}

@@ -15,9 +15,17 @@ import (
 // TODO automate migrations db.AutoMigrate(&RecipeType{})
 
 type RecipeType struct {
-	Id       string `gorm:"column:id;primaryKey"`
-	Category string `gorm:"column:category"`
+	Id       string `gorm:"primaryKey"`
+	Category string
 	Type     string `gorm:"column:TYPE"`
+}
+
+type RecipeItemOutputs struct {
+	ItemOutputsKey              int `gorm:"primaryKey"`
+	ItemOutputsValueItemId      string
+	ItemOutputsValueProbability float64
+	ItemOutputsValueStackSize   int
+	RecipeId                    string `gorm:"primaryKey"`
 }
 
 type Database struct {
@@ -36,9 +44,19 @@ func NewDatabase() Database {
 	}
 }
 
+func (db *Database) SearchRecipeItemOutputs(query string) []RecipeItemOutputs {
+	var matches []RecipeItemOutputs
+	//TODO use LIKE operator to search rather than do exact match
+	//TODO create templ components for displaying these
+	if err := db.db.Where(&RecipeItemOutputs{RecipeId: query}, "RecipeId").Find(&matches).Error; err != nil {
+		fmt.Printf("SearchRecipeItemOutputs: %v\n", err)
+	}
+	return matches
+}
+
 func (db *Database) GetRecipeTypes() []string {
 	var types []string
-	if err := db.db.Table("recipe_type").Select(`"TYPE"`).Find(&types).Error; err != nil {
+	if err := db.db.Model(&RecipeType{}).Pluck(`"TYPE"`, &types).Error; err != nil {
 		fmt.Printf("GetRecipeTypes: %v\n", err)
 		return []string{"error"}
 	}
