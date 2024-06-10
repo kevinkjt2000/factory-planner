@@ -32,6 +32,11 @@ type Database struct {
 	db *gorm.DB
 }
 
+func (db *Database) Close() {
+	wrappedDb, _ := db.db.DB()
+	wrappedDb.Close()
+}
+
 func NewDatabase() Database {
 	db, err := gorm.Open(postgres.Open("postgres://postgres:example@localhost:5432/gtnh_recipes"), &gorm.Config{NamingStrategy: schema.NamingStrategy{SingularTable: true}})
 	if err != nil {
@@ -44,11 +49,9 @@ func NewDatabase() Database {
 	}
 }
 
-func (db *Database) SearchRecipeItemOutputs(query string) []RecipeItemOutputs {
-	var matches []RecipeItemOutputs
-	//TODO use LIKE operator to search rather than do exact match
-	//TODO create templ components for displaying these
-	if err := db.db.Where(&RecipeItemOutputs{RecipeId: query}, "RecipeId").Find(&matches).Error; err != nil {
+func (db *Database) SearchRecipeItemOutputs(query string) []string {
+	var matches []string
+	if err := db.db.Table("recipe_item_outputs").Select("recipe_id").Where("item_outputs_value_item_id LIKE ?", "%"+query+"%").Limit(10).Find(&matches).Error; err != nil {
 		fmt.Printf("SearchRecipeItemOutputs: %v\n", err)
 	}
 	return matches

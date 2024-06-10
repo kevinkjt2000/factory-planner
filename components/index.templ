@@ -12,9 +12,28 @@ templ RecipeTypes(types []string) {
 	</div>
 }
 
-templ Page(types []string) {
+templ RecipeSearch() {
 	<div>
-		@RecipeTypes(types)
-		@LiveReload()
+		<input type="text" hx-get="/search" hx-target="#search-results" hx-trigger="input changed delay:500ms" placeholder="Type here to search recipes..." name="item"/>
+		<div id="search-results"></div>
 	</div>
+}
+
+templ SearchResults(stuff []string) {
+	<ul>
+		for _, x := range stuff {
+			<li>{x}</li>
+		}
+	</ul>
+}
+
+templ Page(types []string) {
+	@RecipeTypes(types)
+	@RecipeSearch()
+}
+
+templ Layout(contents templ.Component) {
+	<script src="https://unpkg.com/htmx.org@1.9.12" integrity="sha384-ujb1lZYygJmzgSwoxRggbCHcjc0rB2XoQrxeTUQyRjrOnlCoYta87iKBWq3EsdM2" crossorigin="anonymous"></script>
+	@contents
+	@LiveReload()
 }
