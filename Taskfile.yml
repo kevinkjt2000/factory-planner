@@ -11,6 +11,9 @@ tasks:
       - exclude: "**/*_templ.go"
     generates:
       - backend
+  db:
+    cmds:
+      - docker compose exec db psql -U postgres -d gtnh_recipes
   run:
     deps: [build]
     cmds:
