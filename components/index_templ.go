@@ -70,7 +70,7 @@ func RecipeSearch() templ.Component {
 			templ_7745c5c3_Var3 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div><input type=\"text\" hx-get=\"/search\" hx-target=\"#search-results\" hx-trigger=\"input changed delay:500ms\" placeholder=\"Type here to search recipes...\" name=\"item\"><div id=\"search-results\"></div></div>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div><input autocomplete=\"off\" type=\"text\" hx-get=\"/search\" hx-target=\"#search-results\" hx-trigger=\"input changed delay:500ms\" placeholder=\"Type here to search recipes...\" name=\"item\"><div id=\"search-results\"></div></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

@@ -14,7 +14,7 @@ templ RecipeTypes(types []string) {
 
 templ RecipeSearch() {
 	<div>
-		<input type="text" hx-get="/search" hx-target="#search-results" hx-trigger="input changed delay:500ms" placeholder="Type here to search recipes..." name="item"/>
+		<input autocomplete="off" type="text" hx-get="/search" hx-target="#search-results" hx-trigger="input changed delay:500ms" placeholder="Type here to search recipes..." name="item"/>
 		<div id="search-results"></div>
 	</div>
 }
