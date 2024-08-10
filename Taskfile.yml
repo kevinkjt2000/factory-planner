@@ -3,12 +3,15 @@ version: "3"
 tasks:
   build:
     cmds:
+      - go generate ./ent
       - templ generate
       - go build -o backend cmd/backend/main.go
     sources:
       - "**/*.go"
       - "**/*.templ"
       - exclude: "**/*_templ.go"
+      - exclude: "ent/**/*.go"
+      - "ent/schema/*.go"
     generates:
       - backend
   db:
@@ -18,3 +21,11 @@ tasks:
     deps: [build]
     cmds:
       - ./backend
+  test:
+    cmds:
+      - go test ./...
+    sources:
+      - "**/*.go"
+      - exclude: "components/**/*"
+      - exclude: "ent/migrate/**/*.go"
+      - exclude: "ent/schema/*.go" # These are inputs for ent codegen and can be ignored for tests

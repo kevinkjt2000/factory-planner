@@ -58,10 +58,11 @@ func (h *SearchHandler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 
 func (h *SearchHandler) handleGet(w http.ResponseWriter, req *http.Request) {
 	item := req.URL.Query().Get("item")
+	type_ := req.URL.Query().Get("type")
 	db := NewDatabase()
 	defer db.Close()
 
-	recipes := db.SearchRecipeItemOutputs(item)
+	recipes := db.SearchRecipes(RecipeSearchCriteria{InputFilter: item, RecipeTypeIds: []string{type_}})
 	err := components.SearchResults(recipes).Render(req.Context(), w)
 	if err != nil {
 		fmt.Printf("searchHandler render: %v", err)
@@ -87,7 +88,7 @@ type IndexHandler struct{}
 func (h *IndexHandler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	db := NewDatabase()
 	defer db.Close()
-	content := components.Page(db.GetRecipeTypes())
+	content := components.Page(db.ListRecipeTypes())
 	err := components.Layout(content).Render(req.Context(), w)
 	if err != nil {
 		fmt.Printf("error during page render: %v", err)

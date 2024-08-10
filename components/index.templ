@@ -1,35 +1,38 @@
 package components
 
-templ RecipeTypes(types []string) {
-	<div>
-		recipe types
-		<datalist id="recipe_types">
-			for _, t := range types {
-				<option>{t}</option>
-			}
-		</datalist>
-		<input list="recipe_types"/>
+type Recipe struct {
+	Id string
+	RecipeTypeId string
+}
+
+templ RecipeSearch(types []string) {
+	<div hx-include="find input">
+		<div>
+			recipe types
+			<datalist id="recipe_types">
+				for _, t := range types {
+					<option>{t}</option>
+				}
+			</datalist>
+			<input list="recipe_types"/>
+		</div>
+		<div>
+			<input autocomplete="off" type="text" hx-get="/search" hx-target="#search-results" hx-trigger="keyup changed delay:500ms" placeholder="Type here to search recipes..." name="item"/>
+			<div id="search-results"></div>
+		</div>
 	</div>
 }
 
-templ RecipeSearch() {
-	<div>
-		<input autocomplete="off" type="text" hx-get="/search" hx-target="#search-results" hx-trigger="input changed delay:500ms" placeholder="Type here to search recipes..." name="item"/>
-		<div id="search-results"></div>
-	</div>
-}
-
-templ SearchResults(stuff []string) {
+templ SearchResults(recipes []Recipe) {
 	<ul>
-		for _, x := range stuff {
-			<li>{x}</li>
+		for _, r := range recipes {
+			<li>{r.RecipeTypeId} {r.Id}</li>
 		}
 	</ul>
 }
 
 templ Page(types []string) {
-	@RecipeTypes(types)
-	@RecipeSearch()
+	@RecipeSearch(types)
 }
 
 templ Layout(contents templ.Component) {

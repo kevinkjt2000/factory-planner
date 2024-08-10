@@ -1,68 +1,78 @@
 package internal
 
 import (
+	"context"
 	"fmt"
 
-	"gorm.io/driver/postgres"
-	"gorm.io/gorm"
-	"gorm.io/gorm/schema"
+	"github.com/kevinkjt2000/factory-planner/components"
+	"github.com/kevinkjt2000/factory-planner/ent"
+	"github.com/kevinkjt2000/factory-planner/ent/recipe"
+	"github.com/kevinkjt2000/factory-planner/ent/recipetype"
+
+	_ "github.com/lib/pq"
 )
 
 // useful psql tips
 // \dt              lists table names
 // \d+ <tablename>  shows column type information about tables
 
-// TODO automate migrations db.AutoMigrate(&RecipeType{})
-
-type RecipeType struct {
-	Id       string `gorm:"primaryKey"`
-	Category string
-	Type     string `gorm:"column:TYPE"`
-}
-
-type RecipeItemOutputs struct {
-	ItemOutputsKey              int `gorm:"primaryKey"`
-	ItemOutputsValueItemId      string
-	ItemOutputsValueProbability float64
-	ItemOutputsValueStackSize   int
-	RecipeId                    string `gorm:"primaryKey"`
-}
-
 type Database struct {
-	db *gorm.DB
+	client *ent.Client
 }
 
 func (db *Database) Close() {
-	wrappedDb, _ := db.db.DB()
-	wrappedDb.Close()
+	db.client.Close()
 }
 
 func NewDatabase() Database {
-	db, err := gorm.Open(postgres.Open("postgres://postgres:example@localhost:5432/gtnh_recipes"), &gorm.Config{NamingStrategy: schema.NamingStrategy{SingularTable: true}})
+	client, err := ent.Open("postgres", "host=localhost port=5432 user=postgres password=example dbname=gtnh_2_6_1 sslmode=disable")
 	if err != nil {
 		fmt.Printf("gorm.Open: %v\n", err)
 		panic(1)
 	}
 
 	return Database{
-		db: db,
+		client: client,
 	}
 }
 
-func (db *Database) SearchRecipeItemOutputs(query string) []string {
-	var matches []string
-	if err := db.db.Table("recipe_item_outputs").Select("recipe_id").Where("item_outputs_value_item_id LIKE ?", "%"+query+"%").Limit(10).Find(&matches).Error; err != nil {
-		fmt.Printf("SearchRecipeItemOutputs: %v\n", err)
-	}
-	return matches
+type RecipeSearchCriteria struct {
+	RecipeTypeIds []string
+	InputFilter   string
 }
 
-func (db *Database) GetRecipeTypes() []string {
-	var types []string
-	if err := db.db.Model(&RecipeType{}).Pluck(`"TYPE"`, &types).Error; err != nil {
-		fmt.Printf("GetRecipeTypes: %v\n", err)
-		return []string{"error"}
+func (db *Database) SearchRecipes(rsc RecipeSearchCriteria) []components.Recipe {
+	query := db.client.Recipe.Query().Limit(20)
+	if len(rsc.RecipeTypeIds) > 0 {
+		query = query.Where(recipe.HasRecipeTypeWith(recipetype.IDIn(rsc.RecipeTypeIds...)))
 	}
+	if rsc.InputFilter != "" {
+		query = query.Where(recipe.IDEQ(rsc.InputFilter))
+	}
+	entRecipes, err := query.All(context.Background())
+	if err != nil {
+		fmt.Printf("recipe query: %v\n", err)
+		return []components.Recipe{}
+	}
+	recipes := make([]components.Recipe, len(entRecipes))
+	for i, rt := range entRecipes {
+		recipes[i] = components.Recipe{
+			Id:           rt.ID,
+			RecipeTypeId: rt.RecipeTypeID,
+		}
+	}
+	return recipes
+}
 
-	return types
+func (db *Database) ListRecipeTypes() []string {
+	entRecipeTypes, err := db.client.RecipeType.Query().All(context.Background())
+	if err != nil {
+		fmt.Printf("list recipe types: %v\n", err)
+		return []string{}
+	}
+	recipeTypes := make([]string, len(entRecipeTypes))
+	for i, rt := range entRecipeTypes {
+		recipeTypes[i] = rt.ID
+	}
+	return recipeTypes
 }
