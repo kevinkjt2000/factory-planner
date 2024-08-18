@@ -6,21 +6,22 @@ type Recipe struct {
 }
 
 templ RecipeSearch(types []string) {
-	<div hx-include="find input">
-		<div>
-			recipe types
+	<div hx-include="this" hx-target="#search-results">
 			<datalist id="recipe_types">
 				for _, t := range types {
 					<option>{t}</option>
 				}
 			</datalist>
-			<input list="recipe_types"/>
-		</div>
-		<div>
-			<input autocomplete="off" type="text" hx-get="/search" hx-target="#search-results" hx-trigger="keyup changed delay:500ms" placeholder="Type here to search recipes..." name="item"/>
-			<div id="search-results"></div>
-		</div>
+			<input list="recipe_types"
+				name="recipe_type" id="recipe_type"
+				placeholder="rt~minecraft~furnace" />
+			<input autocomplete="off" type="search" 
+				name="item" id="item"
+				placeholder="Type here to search recipes..." 
+				hx-get="/search"
+				hx-trigger="keyup changed delay:500ms" />
 	</div>
+	<div id="search-results"></div>
 }
 
 templ SearchResults(recipes []Recipe) {

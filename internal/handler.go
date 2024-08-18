@@ -58,7 +58,7 @@ func (h *SearchHandler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 
 func (h *SearchHandler) handleGet(w http.ResponseWriter, req *http.Request) {
 	item := req.URL.Query().Get("item")
-	type_ := req.URL.Query().Get("type")
+	type_ := req.URL.Query().Get("recipe_type")
 	db := NewDatabase()
 	defer db.Close()
 

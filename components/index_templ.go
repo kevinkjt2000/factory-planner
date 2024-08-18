@@ -28,7 +28,7 @@ func RecipeSearch(types []string) templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div hx-include=\"find input\"><div>recipe types <datalist id=\"recipe_types\">")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div hx-include=\"this\" hx-target=\"#search-results\"><datalist id=\"recipe_types\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -40,7 +40,7 @@ func RecipeSearch(types []string) templ.Component {
 			var templ_7745c5c3_Var2 string
 			templ_7745c5c3_Var2, templ_7745c5c3_Err = templ.JoinStringErrs(t)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/index.templ`, Line: 14, Col: 15}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/index.templ`, Line: 12, Col: 15}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var2))
 			if templ_7745c5c3_Err != nil {
@@ -51,7 +51,7 @@ func RecipeSearch(types []string) templ.Component {
 				return templ_7745c5c3_Err
 			}
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</datalist> <input list=\"recipe_types\"></div><div><input autocomplete=\"off\" type=\"text\" hx-get=\"/search\" hx-target=\"#search-results\" hx-trigger=\"keyup changed delay:500ms\" placeholder=\"Type here to search recipes...\" name=\"item\"><div id=\"search-results\"></div></div></div>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</datalist> <input list=\"recipe_types\" name=\"recipe_type\" id=\"recipe_type\" placeholder=\"rt~minecraft~furnace\"> <input autocomplete=\"off\" type=\"search\" name=\"item\" id=\"item\" placeholder=\"Type here to search recipes...\" hx-get=\"/search\" hx-trigger=\"keyup changed delay:500ms\"></div><div id=\"search-results\"></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -87,7 +87,7 @@ func SearchResults(recipes []Recipe) templ.Component {
 			var templ_7745c5c3_Var4 string
 			templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.JoinStringErrs(r.RecipeTypeId)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/index.templ`, Line: 29, Col: 22}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/index.templ`, Line: 30, Col: 22}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var4))
 			if templ_7745c5c3_Err != nil {
@@ -100,7 +100,7 @@ func SearchResults(recipes []Recipe) templ.Component {
 			var templ_7745c5c3_Var5 string
 			templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.JoinStringErrs(r.Id)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/index.templ`, Line: 29, Col: 29}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/index.templ`, Line: 30, Col: 29}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var5))
 			if templ_7745c5c3_Err != nil {

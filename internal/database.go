@@ -13,6 +13,7 @@ import (
 )
 
 // useful psql tips
+// \c               connect/choose database
 // \dt              lists table names
 // \d+ <tablename>  shows column type information about tables
 
@@ -42,8 +43,10 @@ type RecipeSearchCriteria struct {
 }
 
 func (db *Database) SearchRecipes(rsc RecipeSearchCriteria) []components.Recipe {
+	fmt.Printf("Searching recipes for %v...\n", rsc)
 	query := db.client.Recipe.Query().Limit(20)
-	if len(rsc.RecipeTypeIds) > 0 {
+	fmt.Printf("length of rsc.RecipeTypeIds is %d.\n", len(rsc.RecipeTypeIds))
+	if len(rsc.RecipeTypeIds) > 0 && rsc.RecipeTypeIds[0] != "" {
 		query = query.Where(recipe.HasRecipeTypeWith(recipetype.IDIn(rsc.RecipeTypeIds...)))
 	}
 	if rsc.InputFilter != "" {
@@ -55,6 +58,7 @@ func (db *Database) SearchRecipes(rsc RecipeSearchCriteria) []components.Recipe 
 		return []components.Recipe{}
 	}
 	recipes := make([]components.Recipe, len(entRecipes))
+	fmt.Printf("Found %d recipes.\n", len(entRecipes))
 	for i, rt := range entRecipes {
 		recipes[i] = components.Recipe{
 			Id:           rt.ID,
