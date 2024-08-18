@@ -17,6 +17,9 @@ tasks:
   db:
     cmds:
       - docker compose exec db psql -U postgres -d gtnh_2_6_1
+  db-log:
+    cmds:
+      - docker compose logs --tail=100 -f
   run:
     deps: [build]
     cmds:
