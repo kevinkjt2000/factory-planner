@@ -16,7 +16,7 @@ tasks:
       - backend
   db:
     cmds:
-      - docker compose exec db psql -U postgres -d gtnh_recipes
+      - docker compose exec db psql -U postgres -d gtnh_2_6_1
   run:
     deps: [build]
     cmds:
